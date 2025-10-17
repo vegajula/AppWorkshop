@@ -69,14 +69,6 @@ Configuration Main
         $source = "https://download.microsoft.com/download/0/1/D/01DC28EA-638C-4A22-A57B-4CEF97755C6C/WebDeploy_amd64_en-US.msi"
         $dest = "C:\WindowsAzure\WebDeploy_amd64_en-US.msi"
 
-        # Ensure modern TLS versions are available; keep existing flags so older endpoints still work
-        $currentProtocols = [System.Net.ServicePointManager]::SecurityProtocol
-        $tls12            = [System.Net.SecurityProtocolType]::Tls12
-        $tls11            = [System.Net.SecurityProtocolType]::Tls11
-        $tls10            = [System.Net.SecurityProtocolType]::Tls
-        [System.Net.ServicePointManager]::SecurityProtocol = $currentProtocols -bor $tls12 -bor $tls11 -bor $tls10
-        Write-Verbose "DownloadWebDeploy: Enabled TLS flags $([System.Net.ServicePointManager]::SecurityProtocol)"
-
         if (-not (Test-Path (Split-Path $dest))) {
           New-Item -ItemType Directory -Path (Split-Path $dest) -Force | Out-Null
         }
@@ -99,7 +91,7 @@ Configuration Main
         }
       }
       GetScript  = {@{Result = "DownloadWebDeploy"}}
-      DependsOn  = "[WindowsFeature]WebServerRole"
+      DependsOn = "[Script]EnableTlsProtocols","[WindowsFeature]WebServerRole"
     }
     Package InstallWebDeploy {
       Ensure    = "Present"  
@@ -133,6 +125,24 @@ Configuration Main
     {            
       Name      = "webpi"
       DependsOn = "[cChocoPackageInstaller]dotnet48"
+    }
+    Script EnableTlsProtocols {
+      TestScript = {
+        $desired = [System.Net.SecurityProtocolType]::Tls -bor `
+               [System.Net.SecurityProtocolType]::Tls11 -bor `
+               [System.Net.SecurityProtocolType]::Tls12
+        $current = [System.Net.ServicePointManager]::SecurityProtocol
+        (($current -band $desired) -eq $desired)
+      }
+      SetScript = {
+        $current = [System.Net.ServicePointManager]::SecurityProtocol
+        $tls12   = [System.Net.SecurityProtocolType]::Tls12
+        $tls11   = [System.Net.SecurityProtocolType]::Tls11
+        $tls10   = [System.Net.SecurityProtocolType]::Tls
+        [System.Net.ServicePointManager]::SecurityProtocol = $current -bor $tls12 -bor $tls11 -bor $tls10
+        Write-Verbose "EnableTlsProtocols: Enabled TLS flags $([System.Net.ServicePointManager]::SecurityProtocol)"
+      }
+      GetScript = { @{ Result = 'EnableTlsProtocols' } }
     }
   }
 }
