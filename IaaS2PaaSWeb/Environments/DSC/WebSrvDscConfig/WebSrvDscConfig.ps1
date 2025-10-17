@@ -8,6 +8,11 @@ Configuration Main
 
   Node $nodeName
   {
+    LocalConfigurationManager {
+      RebootNodeIfNeeded = $true
+      ActionAfterReboot  = "ContinueConfiguration"
+    }
+
     WindowsFeature WebServerRole {
       Name   = "Web-Server"
       Ensure = "Present"
@@ -63,6 +68,8 @@ Configuration Main
       SetScript  = {
         $source = "https://download.microsoft.com/download/0/1/D/01DC28EA-638C-4A22-A57B-4CEF97755C6C/WebDeploy_amd64_en-US.msi"
         $dest = "C:\WindowsAzure\WebDeploy_amd64_en-US.msi"
+
+        # Ensure modern TLS versions are available; keep existing flags so older endpoints still work
         $currentProtocols = [System.Net.ServicePointManager]::SecurityProtocol
         $tls12            = [System.Net.SecurityProtocolType]::Tls12
         $tls11            = [System.Net.SecurityProtocolType]::Tls11
@@ -112,20 +119,20 @@ Configuration Main
     { 
       InstallDir = "C:\choco" 
     }
-  cChocoPackageInstaller googlechrome
-  {            
-    Name = "googlechrome"
-    DependsOn = "[cChocoInstaller]installChoco"
-  }
-  cChocoPackageInstaller dotnet48
-  {
-    Name = "dotnetfx"
-    DependsOn = "[cChocoInstaller]installChoco"
-  }
-  cChocoPackageInstaller webpi
-  {            
-    Name = "webpi"
-    DependsOn = "[cChocoPackageInstaller]dotnet48"
-  }
+    cChocoPackageInstaller dotnet48
+    {
+      Name      = "dotnetfx"
+      DependsOn = "[cChocoInstaller]installChoco"
+    }
+    cChocoPackageInstaller googlechrome
+    {            
+      Name      = "googlechrome"
+      DependsOn = "[cChocoPackageInstaller]dotnet48"
+    }
+    cChocoPackageInstaller webpi
+    {            
+      Name      = "webpi"
+      DependsOn = "[cChocoPackageInstaller]dotnet48"
+    }
   }
 }
