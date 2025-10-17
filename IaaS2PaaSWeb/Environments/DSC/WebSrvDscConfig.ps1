@@ -69,15 +69,25 @@ Configuration Main
         $source = "https://download.microsoft.com/download/0/1/D/01DC28EA-638C-4A22-A57B-4CEF97755C6C/WebDeploy_amd64_en-US.msi"
         $dest = "C:\WindowsAzure\WebDeploy_amd64_en-US.msi"
 
-        # Ensure TLS 1.2 is enabled before downloading; older hosts default to weaker protocols
-        $secureProtocols = [System.Net.SecurityProtocolType]::Tls12
-        [System.Net.ServicePointManager]::SecurityProtocol = $secureProtocols
+        # Ensure modern TLS versions are available; keep existing flags so older endpoints still work
+        $currentProtocols = [System.Net.ServicePointManager]::SecurityProtocol
+        $tls12          = [System.Net.SecurityProtocolType]::Tls12
+        $tls11          = [System.Net.SecurityProtocolType]::Tls11
+        $tls10          = [System.Net.SecurityProtocolType]::Tls
+        [System.Net.ServicePointManager]::SecurityProtocol = $currentProtocols -bor $tls12 -bor $tls11 -bor $tls10
 
         if (-not (Test-Path (Split-Path $dest))) {
           New-Item -ItemType Directory -Path (Split-Path $dest) -Force | Out-Null
         }
 
-        Invoke-WebRequest -Uri $source -OutFile $dest -UseBasicParsing
+        try {
+          Invoke-WebRequest -Uri $source -OutFile $dest -UseBasicParsing -ErrorAction Stop
+        }
+        catch {
+          # Fallback to BITS transfer to handle transient HTTPS issues
+          if (Test-Path $dest) { Remove-Item $dest -Force }
+          Start-BitsTransfer -Source $source -Destination $dest -ErrorAction Stop
+        }
       }
       GetScript  = {@{Result = "DownloadWebDeploy"}}
       DependsOn  = "[WindowsFeature]WebServerRole"
