@@ -8,6 +8,11 @@ Configuration Main
 
   Node $nodeName
   {
+    LocalConfigurationManager {
+      RebootNodeIfNeeded = $true
+      ActionAfterReboot  = "ContinueConfiguration"
+    }
+
     WindowsFeature WebServerRole {
       Name   = "Web-Server"
       Ensure = "Present"
@@ -86,20 +91,20 @@ Configuration Main
     { 
       InstallDir = "C:\choco" 
     }
-  cChocoPackageInstaller dotnet48
-  {
-    Name = "dotnetfx"
-    DependsOn = "[cChocoInstaller]installChoco"
-  }
-  cChocoPackageInstaller googlechrome
-  {            
-    Name = "googlechrome"
-    DependsOn = "[cChocoPackageInstaller]dotnet48"
-  }
-  cChocoPackageInstaller webpi
-  {            
-    Name = "webpi"
-    DependsOn = "[cChocoPackageInstaller]dotnet48"
-  }
+    cChocoPackageInstaller dotnet48
+    {
+      Name      = "dotnetfx"
+      DependsOn = "[cChocoInstaller]installChoco"
+    }
+    cChocoPackageInstaller googlechrome
+    {            
+      Name      = "googlechrome"
+      DependsOn = "[cChocoPackageInstaller]dotnet48"
+    }
+    cChocoPackageInstaller webpi
+    {            
+      Name      = "webpi"
+      DependsOn = "[cChocoPackageInstaller]dotnet48"
+    }
   }
 }
