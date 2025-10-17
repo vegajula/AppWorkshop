@@ -86,15 +86,15 @@ Configuration Main
     { 
       InstallDir = "C:\choco" 
     }
-  cChocoPackageInstaller googlechrome
-  {            
-    Name = "googlechrome"
-    DependsOn = "[cChocoInstaller]installChoco"
-  }
   cChocoPackageInstaller dotnet48
   {
     Name = "dotnetfx"
     DependsOn = "[cChocoInstaller]installChoco"
+  }
+  cChocoPackageInstaller googlechrome
+  {            
+    Name = "googlechrome"
+    DependsOn = "[cChocoPackageInstaller]dotnet48"
   }
   cChocoPackageInstaller webpi
   {            
