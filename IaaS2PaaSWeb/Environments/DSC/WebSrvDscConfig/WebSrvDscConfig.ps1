@@ -63,7 +63,33 @@ Configuration Main
       SetScript  = {
         $source = "https://download.microsoft.com/download/0/1/D/01DC28EA-638C-4A22-A57B-4CEF97755C6C/WebDeploy_amd64_en-US.msi"
         $dest = "C:\WindowsAzure\WebDeploy_amd64_en-US.msi"
-        Invoke-WebRequest $source -OutFile $dest
+        $currentProtocols = [System.Net.ServicePointManager]::SecurityProtocol
+        $tls12            = [System.Net.SecurityProtocolType]::Tls12
+        $tls11            = [System.Net.SecurityProtocolType]::Tls11
+        $tls10            = [System.Net.SecurityProtocolType]::Tls
+        [System.Net.ServicePointManager]::SecurityProtocol = $currentProtocols -bor $tls12 -bor $tls11 -bor $tls10
+        Write-Verbose "DownloadWebDeploy: Enabled TLS flags $([System.Net.ServicePointManager]::SecurityProtocol)"
+
+        if (-not (Test-Path (Split-Path $dest))) {
+          New-Item -ItemType Directory -Path (Split-Path $dest) -Force | Out-Null
+        }
+
+        try {
+          Write-Verbose "DownloadWebDeploy: Attempting Invoke-WebRequest from $source"
+          Invoke-WebRequest -Uri $source -OutFile $dest -UseBasicParsing -ErrorAction Stop
+          Write-Verbose "DownloadWebDeploy: Invoke-WebRequest succeeded"
+        }
+        catch {
+          Write-Verbose "DownloadWebDeploy: Invoke-WebRequest failed with $_. Start BITS fallback."
+          if (Test-Path $dest) { Remove-Item $dest -Force }
+          try {
+            Start-BitsTransfer -Source $source -Destination $dest -ErrorAction Stop
+            Write-Verbose "DownloadWebDeploy: BITS transfer succeeded"
+          }
+          catch {
+            throw "DownloadWebDeploy: Unable to download WebDeploy via Invoke-WebRequest or BITS. Last error: $($_.Exception.Message)"
+          }
+        }
       }
       GetScript  = {@{Result = "DownloadWebDeploy"}}
       DependsOn  = "[WindowsFeature]WebServerRole"
