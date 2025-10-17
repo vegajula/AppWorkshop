@@ -68,7 +68,16 @@ Configuration Main
       SetScript  = {
         $source = "https://download.microsoft.com/download/0/1/D/01DC28EA-638C-4A22-A57B-4CEF97755C6C/WebDeploy_amd64_en-US.msi"
         $dest = "C:\WindowsAzure\WebDeploy_amd64_en-US.msi"
-        Invoke-WebRequest $source -OutFile $dest
+
+        # Ensure TLS 1.2 is enabled before downloading; older hosts default to weaker protocols
+        $secureProtocols = [System.Net.SecurityProtocolType]::Tls12
+        [System.Net.ServicePointManager]::SecurityProtocol = $secureProtocols
+
+        if (-not (Test-Path (Split-Path $dest))) {
+          New-Item -ItemType Directory -Path (Split-Path $dest) -Force | Out-Null
+        }
+
+        Invoke-WebRequest -Uri $source -OutFile $dest -UseBasicParsing
       }
       GetScript  = {@{Result = "DownloadWebDeploy"}}
       DependsOn  = "[WindowsFeature]WebServerRole"
