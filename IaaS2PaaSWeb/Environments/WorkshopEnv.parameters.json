@@ -7,6 +7,9 @@
     },
     "AdminUserPassword": {
       "value": "Password$123"
+    },
+    "repoUri": {
+      "value": "https://github.com/your-account/AppWorkshop.git"
     }
 
   }

@@ -56,15 +56,23 @@
     },
     "sqlSchemaScript": {
       "type": "string",
-      "defaultValue": "https://raw.githubusercontent.com/karlrissland/AppWorkshop/master/IaaS2PaaSWeb/PartsUnlimitedDatabase/Migrations/0001_20170912-1438_karlriss.sql"
+      "defaultValue": "[concat(parameters('_artifactsLocation'), '/PartsUnlimitedDatabase/Migrations/0001_20170912-1438_karlriss.sql', parameters('_artifactsLocationSasToken'))]",
+      "metadata": {
+        "description": "Location of the database schema seed script. Defaults to the staged artifacts that accompany this deployment."
+      }
     },
     "sqlDataScript": {
       "type": "string",
-      "defaultValue": "https://raw.githubusercontent.com/karlrissland/AppWorkshop/master/IaaS2PaaSWeb/PartsUnlimitedDatabase/Post-Deployment/01_Finalize_Deployment.sql"
+      "defaultValue": "[concat(parameters('_artifactsLocation'), '/PartsUnlimitedDatabase/Post-Deployment/01_Finalize_Deployment.sql', parameters('_artifactsLocationSasToken'))]",
+      "metadata": {
+        "description": "Location of the database data seed script. Defaults to the staged artifacts that accompany this deployment."
+      }
     },
     "repoUri": {
       "type": "string",
-      "defaultValue": "https://github.com/karlrissland/AppWorkshop.git"
+      "metadata": {
+        "description": "Git clone URI that the dev workstation should use for the application source. Provide your fork or a private Git endpoint."
+      }
     },
     "_artifactsLocation": {
       "type": "string",
