@@ -85,7 +85,7 @@
   },
   "variables": {
     "srvStorageType": "Standard_LRS",
-    "WebSrvOSVersion": "2016-Datacenter",
+    "WebSrvOSVersion": "2022-Datacenter",
     "TemplateFolder": "nestedtemplates",
     "vNetTemplateFileName": "vNet.json",
     "DevWorkstationTemplateFileName": "VsDevWorkstation.json",
