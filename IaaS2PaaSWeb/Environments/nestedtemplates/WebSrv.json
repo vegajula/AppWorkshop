@@ -23,11 +23,11 @@
     },
     "WebSrvWindowsOSVersion": {
       "type": "string",
-      "defaultValue": "2022-Datacenter",
+      "defaultValue": "2022-datacenter-azure-edition",
       "allowedValues": [
         "2012-R2-Datacenter",
         "2016-Datacenter",
-        "2022-Datacenter"
+        "2022-datacenter-azure-edition"
       ]
     },
     "virtualNetworkName": {

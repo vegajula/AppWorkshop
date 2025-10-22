@@ -102,7 +102,7 @@
           "imageReference": {
             "publisher": "MicrosoftSQLServer",
             "offer": "sql2022-ws2022",
-            "sku": "Web",
+            "sku": "web-gen2",
             "version": "latest"
           },
           "osDisk": {
