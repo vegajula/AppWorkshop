@@ -23,10 +23,11 @@
     },
     "WebSrvWindowsOSVersion": {
       "type": "string",
-      "defaultValue": "2016-Datacenter",
+      "defaultValue": "2022-Datacenter",
       "allowedValues": [
         "2012-R2-Datacenter",
-        "2016-Datacenter"
+        "2016-Datacenter",
+        "2022-Datacenter"
       ]
     },
     "virtualNetworkName": {
@@ -101,7 +102,7 @@
       "name": "[parameters('WebSrvName')]",
       "type": "Microsoft.Compute/virtualMachines",
       "location": "[resourceGroup().location]",
-      "apiVersion": "2016-04-30-preview",
+      "apiVersion": "2023-09-01",
       "dependsOn": [
         "[resourceId('Microsoft.Network/networkInterfaces', variables('WebSrvNicName'))]"
       ],
