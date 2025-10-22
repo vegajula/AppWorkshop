@@ -85,7 +85,7 @@
   },
   "variables": {
     "srvStorageType": "Standard_LRS",
-    "WebSrvOSVersion": "2022-Datacenter",
+    "WebSrvOSVersion": "2022-datacenter-azure-edition",
     "TemplateFolder": "nestedtemplates",
     "vNetTemplateFileName": "vNet.json",
     "DevWorkstationTemplateFileName": "VsDevWorkstation.json",
