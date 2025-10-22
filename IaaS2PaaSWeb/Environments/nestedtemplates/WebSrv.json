@@ -53,7 +53,7 @@
     "WebSrvImagePublisher": "MicrosoftWindowsServer",
     "WebSrvImageOffer": "WindowsServer",
     "WebSrvOSDiskName": "WebSrvOSDisk",
-  "WebSrvVmSize": "Standard_D2s_v5",
+  "WebSrvVmSize": "Standard_B2ms",
     "WebSrvVnetID": "[resourceId(parameters('virtualNetworkResourceGroup'), 'Microsoft.Network/virtualNetworks', parameters('virtualNetworkName'))]",
     "WebSrvSubnetRef": "[concat(variables('WebSrvVnetID'), '/subnets/', 'Subnet-1')]",
     "WebSrvStorageAccountContainerName": "vhds",

@@ -66,7 +66,7 @@
     "networkSecurityGroupName": "[concat(parameters('virtualMachineName'), 'NSG')]",
     "publicIpAddressName": "[concat(parameters('virtualMachineName'),'PubIp')]",
     "publicIpAddressDnsName": "[toLower(concat(parameters('virtualMachineName'),uniqueString(resourceGroup().id)))]",
-    "virtualMachineSize": "Standard_D4s_v5",
+  "virtualMachineSize": "Standard_B4ms",
     "sqlAuthenticationLogin": "sa",
     "SqlSrvDscConfigArchiveFolder": "DSC",
     "SqlSrvDscConfigArchiveFileName": "SqlSrvDscConfig.zip",
